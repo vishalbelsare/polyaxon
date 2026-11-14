@@ -27,5 +27,37 @@ polyaxon run -f ... --name new-run --description adding-some-changes -u -l
 polyaxon run -f ... --name another-name --description run-with-custom-connection --tags tests,debug
 ```
 
+## Names from params
+
+A Polyaxonfile name can reference params:
+
+```yaml
+name: train-{{ optimizer }}-{{ lr }}
+params:
+  optimizer: {value: adam}
+  lr: {value: 0.01}
+component:
+  inputs:
+    - {name: optimizer, type: str}
+    - {name: lr, type: float}
+  run: ...
+```
+
+This run is named `train-adam-0_01`. Polyaxon renders the name once, when the run is created:
+
+ * The name can use params with literal values and input defaults.
+ * Nothing else is available, including values from another run, a join or the matrix, params whose value is itself a template, and `globals`. Creating the run fails with an error that names the variable.
+ * Each run of characters other than letters, digits, `_` and `-` becomes one `_`, and leading or trailing `_` and `-` are removed. Creating the run fails if nothing is left. A result longer than 128 characters is cut to fit and ends in `--`.
+ * Quote the name when it starts with a template: `name: "{{ lr }}-train"`.
+ * `--name` takes precedence and is used as is.
+ * Restart, copy, and resume keep the name, even when params change. Pass `--name` to rename the run.
+ * Matrix trials and scheduled runs take the parent's name.
+ * Operation names inside a DAG cannot use templates. The DAG's own name can.
+
+## Default names
+
+When neither the CLI nor the Polyaxonfile sets a name, Polyaxon generates a two-word name such as `curious-otter`.
+Generated names can repeat; the run's UUID identifies it.
+
 
 > For more details about this command please run `polyaxon run --help`, or check the [command reference](/docs/references/cli/run/) 

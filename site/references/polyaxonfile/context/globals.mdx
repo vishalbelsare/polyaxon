@@ -24,7 +24,7 @@ The following information can be accessed by all Polyaxon sections:
  * `{{ globals.project_unique_name }}`: Unique name of the project `owner.project_name`.
  * `{{ globals.project_uuid }}`: Project uuid.
  * `{{ globals.run_info }}`: `owner.project_name.uuid` unique name of the run.
- * `{{ globals.name }}`: The run name if available.
+ * `{{ globals.name }}`: The run name. If the Polyaxonfile name uses params, this is the rendered name; `globals` values cannot be used in the name itself. When a new run has no name, Polyaxon generates a two-word name such as `curious-otter`.
  * `{{ globals.uuid }}`: The run uuid.
  * `{{ globals.namespace }}`: The k8s namespace where the operation will be scheduled.
  * `{{ globals.context_path }}`: The context that Polyaxon will share with the main container: `/plx_context`. This context contains all artifacts and other configs.
